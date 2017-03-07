@@ -20,7 +20,10 @@ activity.data <- read.csv("activity.csv")
 ```r
 agg.date <- aggregate(steps ~ date, activity.data, sum)
 hist(agg.date$steps, 
-     col = "springgreen")
+     col = "springgreen",
+     xlab = "Steps",
+     ylab = "Number of Days",
+     main = "Histogram of Total Steps per Day")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
@@ -53,7 +56,11 @@ median.steps
 
 ```r
 agg.interval <- aggregate(steps ~ interval, activity.data, mean)
-qplot(interval, steps, data = agg.interval, geom = "line") 
+p <- qplot(interval, steps, data = agg.interval, geom = "line") 
+p <- p + xlab("Interval")
+p <- p + ylab("Average Steps per Day")
+p <- p + ggtitle("Time Series of Average Steps per Day")
+print(p)
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
@@ -100,7 +107,10 @@ for (i in seq(nrow(complete))) {
 
 agg.complete.date <- aggregate(steps ~ date, complete, sum, na.rm = T)
 hist(agg.complete.date$steps, 
-     col = "springgreen")
+     col = "springgreen",
+     xlab = "Steps",
+     ylab = "Number of Days",
+     main = "Histogram of Total Steps per Day")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
