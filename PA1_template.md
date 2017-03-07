@@ -1,65 +1,88 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 ## Importing necessary libraries
-```{r}
+
+```r
 suppressMessages(require(dplyr))
 suppressMessages(require(ggplot2))
 ```
 
 ## Loading and preprocessing the data
-```{r}
+
+```r
 unzip("activity.zip")
 activity.data <- read.csv("activity.csv")
 ```
 
 
 ## What is mean total number of steps taken per day?
-```{r}
+
+```r
 agg.date <- aggregate(steps ~ date, activity.data, sum)
 hist(agg.date$steps, 
      col = "springgreen")
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
 
 ## What is the average daily activity pattern?
 
 ### Mean and median steps per day
-```{r}
+
+```r
 mean.steps <- mean(agg.date$steps)
 median.steps <- median(agg.date$steps)
 # Mean steps per day
 mean.steps
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 # Median steps per day
 median.steps
 ```
+
+```
+## [1] 10765
+```
 ### Time series plot of the average number of steps taken
-```{r}
+
+```r
 agg.interval <- aggregate(steps ~ interval, activity.data, mean)
 qplot(interval, steps, data = agg.interval, geom = "line") 
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
 ### The 5-minute interval that, on average, contains the maximum number of steps
-```{r}
+
+```r
 max_interval <- agg.interval[which.max(agg.interval$steps), ]
 print (max_interval)
+```
+
+```
+##     interval    steps
+## 104      835 206.1698
 ```
 
 ## Imputing missing values
 
 ### Count of missing values in dataset
-```{r}
+
+```r
 missing <- activity.data[is.na(activity.data$steps), ]
 missing.count <- dim(missing)[1]
 ```
-- Here is the missing count: `r missing.count `
+- Here is the missing count: 2304
 
 ### Missing steps data will be replaced with the mean for the corresponding interval
-```{r}
+
+```r
 complete <- activity.data
 # for each row...
 for (i in seq(nrow(complete))) {
@@ -78,36 +101,52 @@ for (i in seq(nrow(complete))) {
 agg.complete.date <- aggregate(steps ~ date, complete, sum, na.rm = T)
 hist(agg.complete.date$steps, 
      col = "springgreen")
-
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+
 ### Mean and median steps per day with complete cases
-```{r}
+
+```r
 mean.complete.steps <- mean(agg.complete.date$steps)
 median.complete.steps <- median(agg.complete.date$steps)
 # Mean steps per day
 mean.complete.steps
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 # Median steps per day
 median.complete.steps
+```
+
+```
+## [1] 10766.19
 ```
 
 My analysis did not reveal any significant differences between the mean and median values 
 for the raw activity data and activity data with imputed values.
 
-```{r}
+
+```r
 difference.mean <- mean.complete.steps - mean.steps
 ```
 
-The difference between the means was `r difference.mean`, indicating no difference/change.
+The difference between the means was 0, indicating no difference/change.
 
-```{r}
+
+```r
 difference.median <- median.complete.steps - median.steps
 ```
 
-The difference between the medians was `r round(difference.median, 4)` (mean.complete.steps - mean.steps)
+The difference between the medians was 1.1887 (mean.complete.steps - mean.steps)
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
+
+```r
 weekend.days <- c("Saturday", "Sunday")
 categories <- c("weekday", "weekend")
 
@@ -120,4 +159,6 @@ p <- qplot(interval, steps, data = agg.complete, geom = "line", facets = .~ week
 p <- p + aes(color = weekday)
 print(p)
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
